@@ -3,9 +3,9 @@ FROM maven:3.9.5-eclipse-temurin-17 AS builder
 
 WORKDIR /workspace
 
-# copy only maven files first to leverage Docker layer caching for dependencies
-COPY pom.xml mvnw ./
-COPY .mvn .mvn
+# Project doesn't include the Maven wrapper; copy only `pom.xml` and use the
+# Maven binary provided by the base image instead of `mvnw`/.mvn.
+COPY pom.xml ./
 
 # pre-download dependencies (faster subsequent builds)
 RUN mvn -B -f pom.xml -DskipTests dependency:go-offline
